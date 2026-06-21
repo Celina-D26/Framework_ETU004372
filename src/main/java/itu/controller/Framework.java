@@ -1,54 +1,70 @@
 package itu.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 public class Framework extends HttpServlet {
+    
+    private List<Class<?>> listeClassController;
+
+      @Override
+    public void init() throws ServletException {
+        super.init();
+        initialiserFramework();
+    }
+
+    private void initialiserFramework() {
+        System.out.println("Initialisation du framework...");
+        listeClassController = Utils.scanControllers();
+        System.out.println("Nombre de controllers trouvés : " + listeClassController.size());
+        System.out.println("Framework initialisé !");
+    }
+
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
-        isPost(req, res);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
-        isGet(req, res);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
     }
 
-    public void isGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = res.getWriter();
-        
-        // 🎯 C'est ici qu'on extrait et qu'on connaît l'URL tapée !
-        String urlComplete = req.getRequestURI(); // Exemple: "/sprint_0/lister"
-        String contextPath = req.getContextPath(); // Exemple: "/sprint_0"
-        
-        // On garde uniquement ce qui vient après le nom du projet
-        String urlTraquee = urlComplete.substring(contextPath.length());
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        String url = request.getRequestURI();
+        System.out.println("[FrontController] URL --> " + url);
+
+        for (Class<?> classe : listeClassController) {
+            System.out.println("Controller dispo : " + classe.getName());
+        }
+
+        String contextPath = request.getContextPath();
+        String urlTraquee = url.substring(contextPath.length());
 
         out.println("<html><body>");
-        out.println("<h2>[Framework] Requête reçue en GET</h2>");
+        out.println("<h2>[Framework] Requête reçue</h2>");
         out.println("<p>L'URL que tu as écrite est : <strong style='color:blue;'>" + urlTraquee + "</strong></p>");
-        out.println("</body></html>");
-    }
 
-    public void isPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = res.getWriter();
-        
-        String urlComplete = req.getRequestURI();
-        String contextPath = req.getContextPath();
-        String urlTraquee = urlComplete.substring(contextPath.length());
+        out.println("<h3>Controllers détectés</h3>");
+        if (listeClassController == null || listeClassController.isEmpty()) {
+            out.println("<p>Aucun controller trouvé.</p>");
+        } else {
+            out.println("<ul>");
+            for (Class<?> c : listeClassController) {
+                out.println("<li>" + c.getName() + "</li>");
+            }
+            out.println("</ul>");
+        }
 
-        out.println("<html><body>");
-        out.println("<h2>[Framework] Requête reçue en POST</h2>");
-        out.println("<p>L'URL soumise est : <strong style='color:red;'>" + urlTraquee + "</strong></p>");
         out.println("</body></html>");
     }
 }
