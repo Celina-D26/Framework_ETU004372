@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class Utils {
 
-    private static final String BASE_PACKAGE = "itu";
+    // 🎯 Note importante : Pense bien à adapter cette valeur à ton package de destination (par exemple "itu" ou "gold") si nécessaire
+    private static final String BASE_PACKAGE = "itu"; 
 
     public static List<Class<?>> scanControllers() {
         List<Class<?>> controllers = new ArrayList<>();
@@ -39,7 +40,11 @@ public class Utils {
         if (fichiers == null) return;
         for (File fichier : fichiers) {
             if (fichier.isDirectory()) {
-                scannerDossier(fichier, packageCourant + "." + fichier.getName(), controllers);
+                scannerDossier(
+                        fichier,
+                        packageCourant + "." + fichier.getName(),
+                        controllers
+                );
             } else if (fichier.getName().endsWith(".class")) {
                 String nomClasse = null;
                 try {
@@ -56,30 +61,35 @@ public class Utils {
         }
     }
 
-    private static boolean isController(Class<?> classe) {
-        if (classe == null) return false;
-        try {
-            return classe.isAnnotationPresent(Controller.class);
-        } catch (Throwable t) {
-            return false; 
-        }
-    }
-
+    /**
+     * Scanne les méthodes annotées @Url dans chaque controller.
+     */
     public static Map<Class<?>, List<Method>> scanMethodes(List<Class<?>> listController) {
         Map<Class<?>, List<Method>> resultat = new HashMap<>();
         for (Class<?> classe : listController) {
             List<Method> methodesMappees = new ArrayList<>();
             for (Method methode : classe.getDeclaredMethods()) {
-                // 🎯 Correction : Utilisation de Url.class
+                // 🎯 Corrigé : Url.class au lieu de UrlMapping.class
                 if (methode.isAnnotationPresent(Url.class)) {
                     methodesMappees.add(methode);
                     String url = methode.getAnnotation(Url.class).value();
+                    Url.TYPE type = methode.getAnnotation(Url.class).type();
                     System.out.println("[Framework] @Url trouvé : "
-                            + classe.getSimpleName() + "#" + methode.getName() + " -> " + url);
+                            + classe.getSimpleName() + "#" + methode.getName()
+                            + " -> " + url + " [" + type + "]");
                 }
             }
             resultat.put(classe, methodesMappees);
         }
         return resultat;
+    }
+
+    private static boolean isController(Class<?> classe) {
+        if (classe == null) return false;
+        try {
+            return classe.isAnnotationPresent(Controller.class);
+        } catch (Throwable t) {
+            return false;
+        }
     }
 }

@@ -9,4 +9,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Url {
     String value();
+    TYPE type();
+    enum TYPE{
+        GET,POST
+    }
 }
