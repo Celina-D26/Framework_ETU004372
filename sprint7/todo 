@@ -1,0 +1,26 @@
+
+
+click bouton submit vers url et de url  vers une methode exemple save
+qui prend employer
+
+bouton--- fron servle
+
+
+
+il  a du methode save() par exemple dans le deptCreate alors il n est pas de paramettre donc 
+mettre une paramettre la dedans par exemple string dans ce cas tu a le tester et creer une formulare
+ et si tu a saver mais il a rien alors il envoye null
+
+ rhf paramettre name de any @ name
+
+
+
+7 :methode controller   
+avant invoker 
+-creer une formulaire
+-avoir des foncion qui prend le paramettre dans le FrontController par exemple
+
+7 bis: binding  ----- misy objet fa tsy seulement objet
+instance employer dispo dans methode
+
+maka argument rah misy argument recupererna
