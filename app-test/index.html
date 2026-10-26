@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framework MVC - Dashboard de Test (Sprint 9)</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --surface: #151c2c;
+            --surface-hover: #1e293b;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --card-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b 0%, var(--bg-dark) 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        header {
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a5b4fc, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            margin: 4px 0 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-sprint {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            font-weight: 600;
+        }
+
+        .badge-highlight {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--accent);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        p.card-desc {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="number"], input[type="email"], input[type="file"] {
+            background: rgba(11, 15, 25, 0.7);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button, .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        button:hover, .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        button.btn-accent {
+            background: #0891b2;
+        }
+        button.btn-accent:hover {
+            background: var(--accent);
+        }
+
+        button.btn-danger {
+            background: #dc2626;
+        }
+        button.btn-danger:hover {
+            background: var(--danger);
+        }
+
+        button.btn-outline, .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+        button.btn-outline:hover, .btn-outline:hover {
+            background: var(--surface-hover);
+        }
+
+        .output-box {
+            background: #0a0d14;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            color: #38bdf8;
+            max-height: 180px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <h1>Test Framework MVC (Sprint 9)</h1>
+            <p>Plateforme de test interactif pour Tomcat 10 & Java 21</p>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span>Tomcat 10 Actif (:8082)</span>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- SPRINT 9 : Session HTTP & @SessionAttribute -->
+        <div class="card full-width" style="border-color: rgba(99, 102, 241, 0.4);">
+            <div class="card-header">
+                <h2>✨ Sprint 9 : Gestion de Session HTTP & @SessionAttribute</h2>
+                <span class="badge-sprint badge-highlight">NOUVEAU - SPRINT 9</span>
+            </div>
+            <p class="card-desc">
+                Le contrôleur peut recevoir directement <code>HttpSession</code> pour sauvegarder des données de session,
+                et injecter ces valeurs avec <code>@SessionAttribute(name="...")</code>.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                <!-- 1. Connexion -->
+                <div class="form-group">
+                    <label>1. Initialiser la Session (Connexion)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="sessUser" value="Celina" placeholder="Nom d'utilisateur" style="flex: 1;">
+                        <button onclick="testConnexion()">🔑 Connexion</button>
+                    </div>
+                </div>
+
+                <!-- 2. Profil -->
+                <div class="form-group">
+                    <label>2. Injecter via @SessionAttribute</label>
+                    <button class="btn-accent" onclick="testProfil()">👤 Voir Profil (/profil)</button>
+                </div>
+
+                <!-- 3. Deconnexion -->
+                <div class="form-group">
+                    <label>3. Invalider la session</label>
+                    <button class="btn-danger" onclick="testDeconnexion()">🚪 Déconnexion</button>
+                </div>
+            </div>
+
+            <div id="sessionResult" class="output-box hidden"></div>
+        </div>
+
+        <!-- SPRINT 7 : Paramètres simples (@Param) -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📝 Binding Paramètres Simples</h2>
+                <span class="badge-sprint">Sprint 7</span>
+            </div>
+            <p class="card-desc">Teste la conversion automatique String vers types primitifs / Date (<code>@Param</code>).</p>
+
+            <div class="form-group">
+                <label>Nom :</label>
+                <input type="text" id="paramNom" value="Celina">
+            </div>
+            <div class="form-group">
+                <label>Âge :</label>
+                <input type="number" id="paramAge" value="21">
+            </div>
+            <div class="form-group">
+                <label>Note :</label>
+                <input type="text" id="paramNote" value="17.5">
+            </div>
+
+            <button onclick="testBindSimple()">Envoyer la Requête (/bind-simple)</button>
+            <div id="simpleResult" class="output-box hidden"></div>
+        </div>
+
+        <!-- SPRINT 7b : Binding Objet & Validation -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📦 Binding Objet & Validation</h2>
+                <span class="badge-sprint">Sprint 7b</span>
+            </div>
+            <p class="card-desc">Remplissage d'un objet (<code>@ParamObject</code>) avec validation <code>@Required</code>, <code>@Range</code>.</p>
+
+            <div class="form-group">
+                <label>etudiant.nom :</label>
+                <input type="text" id="objNom" value="Rasoa">
+            </div>
+            <div class="form-group">
+                <label>etudiant.age (16 - 100) :</label>
+                <input type="number" id="objAge" value="22">
+            </div>
+            <div class="form-group">
+                <label>etudiant.email :</label>
+                <input type="email" id="objEmail" value="rasoa@itu.mg">
+            </div>
+
+            <button class="btn-accent" onclick="testBindObjet()">Tester Validation POST (/bind-objet)</button>
+            <div id="objetResult" class="output-box hidden"></div>
+        </div>
+
+        <!-- SPRINT 7 : ModelAndView & JSP -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📄 ModelAndView & Vue JSP</h2>
+                <span class="badge-sprint">Sprint 7</span>
+            </div>
+            <p class="card-desc">Redirection vers une vue JSP (<code>bienvenue.jsp</code>) avec passage de modèle de données.</p>
+            <div class="form-group">
+                <label>Nom pour la vue :</label>
+                <input type="text" id="vueNom" value="Celina">
+            </div>
+            <div class="btn-group">
+                <button onclick="ouvrirVue()">Ouvrir la page JSP (/vue)</button>
+            </div>
+        </div>
+
+        <!-- SPRINT 6 : Retour API JSON -->
+        <div class="card">
+            <div class="card-header">
+                <h2>⚡ API JSON REST</h2>
+                <span class="badge-sprint">Sprint 6</span>
+            </div>
+            <p class="card-desc">Sérialisation JSON par réflexion via <code>@UrlApi</code> sans dépendances externes.</p>
+            <div class="btn-group">
+                <button onclick="testApi()">Appeler l'API (/api/data)</button>
+                <a href="api/data" target="_blank" class="btn btn-outline">Ouvrir dans nouvel onglet ↗</a>
+            </div>
+            <div id="apiResult" class="output-box hidden"></div>
+        </div>
+
+        <!-- SPRINT 8 : Upload de fichier Multipart -->
+        <div class="card full-width">
+            <div class="card-header">
+                <h2>📁 Upload Multipart (FileUpload)</h2>
+                <span class="badge-sprint">Sprint 8</span>
+            </div>
+            <p class="card-desc">Injection automatique du fichier uploadé dans le contrôleur via <code>FileUpload</code>.</p>
+
+            <form id="uploadForm" onsubmit="testUpload(event)" style="display: flex; gap: 16px; align-items: flex-end;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Choisir un fichier :</label>
+                    <input type="file" id="fichierInput" name="fichier" required>
+                </div>
+                <button type="submit">📤 Uploader le fichier (/upload)</button>
+            </form>
+            <div id="uploadResult" class="output-box hidden"></div>
+        </div>
+
+        <!-- Liste globale des routes -->
+        <div class="card full-width">
+            <div class="card-header">
+                <h2>🔍 Scanner de Contrôleurs & Routes</h2>
+                <span class="badge-sprint">Racine du Framework</span>
+            </div>
+            <p class="card-desc">Le FrontController Servlet liste automatiquement toutes les routes découvertes à la racine.</p>
+            <div class="btn-group">
+                <a href="./" target="_blank" class="btn btn-outline">Voir la liste brute des routes (/app-test/) ↗</a>
+                <button onclick="chargerRoutes()">Afficher ici</button>
+            </div>
+            <div id="routesResult" class="output-box hidden"></div>
+        </div>
+
+    </main>
+
+    <script>
+        async function afficherReponse(elementId, promise) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('hidden');
+            el.textContent = "Chargement en cours...";
+            try {
+                const res = await promise;
+                const text = await res.text();
+                el.textContent = `[HTTP ${res.status} ${res.statusText}]\n\n${text}`;
+            } catch (err) {
+                el.textContent = `[ERREUR DE CONNEXION] ${err.message}`;
+            }
+        }
+
+        function testConnexion() {
+            const nom = encodeURIComponent(document.getElementById('sessUser').value);
+            afficherReponse('sessionResult', fetch(`connexion?utilisateur=${nom}`));
+        }
+
+        function testProfil() {
+            afficherReponse('sessionResult', fetch('profil'));
+        }
+
+        function testDeconnexion() {
+            afficherReponse('sessionResult', fetch('deconnexion'));
+        }
+
+        function testBindSimple() {
+            const nom = encodeURIComponent(document.getElementById('paramNom').value);
+            const age = encodeURIComponent(document.getElementById('paramAge').value);
+            const note = encodeURIComponent(document.getElementById('paramNote').value);
+            afficherReponse('simpleResult', fetch(`bind-simple?nom=${nom}&age=${age}&note=${note}&valide=true`));
+        }
+
+        function testBindObjet() {
+            const nom = document.getElementById('objNom').value;
+            const age = document.getElementById('objAge').value;
+            const email = document.getElementById('objEmail').value;
+
+            const params = new URLSearchParams();
+            params.append('etudiant.nom', nom);
+            params.append('etudiant.age', age);
+            params.append('etudiant.email', email);
+
+            afficherReponse('objetResult', fetch('bind-objet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            }));
+        }
+
+        function ouvrirVue() {
+            const nom = encodeURIComponent(document.getElementById('vueNom').value);
+            window.open(`vue?nom=${nom}`, '_blank');
+        }
+
+        function testApi() {
+            afficherReponse('apiResult', fetch('api/data'));
+        }
+
+        function testUpload(event) {
+            event.preventDefault();
+            const input = document.getElementById('fichierInput');
+            if (!input.files.length) return;
+
+            const formData = new FormData();
+            formData.append('fichier', input.files[0]);
+
+            afficherReponse('uploadResult', fetch('upload', {
+                method: 'POST',
+                body: formData
+            }));
+        }
+
+        function chargerRoutes() {
+            afficherReponse('routesResult', fetch('./'));
+        }
+    </script>
+</body>
+</html>
